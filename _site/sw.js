@@ -1,6 +1,6 @@
-self.importScripts('/YeBug.github.io/_site/assets/js/data/swcache.js');
+self.importScripts('/assets/js/data/swcache.js');
 
-const cacheName = 'chirpy-20230518.161912';
+const cacheName = 'chirpy-20230518.162632';
 
 function verifyDomain(url) {
     for (const domain of allowedDomains) {

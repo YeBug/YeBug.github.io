@@ -2,4 +2,4 @@ User-agent: *
 
 Disallow: /norobots/
 
-Sitemap: https://yebug.github.io/YeBug.github.io/_site/sitemap.xml
+Sitemap: https://yebug.github.io/sitemap.xml

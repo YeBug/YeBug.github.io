@@ -1,21 +1,21 @@
 
 
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <id>https://yebug.github.io/YeBug.github.io/_site/</id>
+  <id>https://yebug.github.io/</id>
   <title>waiting for main title</title>
   <subtitle>A minimal, responsive and feature-rich Jekyll theme for technical writing.</subtitle>
-  <updated>2023-05-18T16:19:12+08:00</updated>
+  <updated>2023-05-18T16:26:32+08:00</updated>
   <author>
     <name>YeBug</name>
-    <uri>https://yebug.github.io/YeBug.github.io/_site/</uri>
+    <uri>https://yebug.github.io/</uri>
   </author>
-  <link rel="self" type="application/atom+xml" href="https://yebug.github.io/YeBug.github.io/_site/feed.xml"/>
+  <link rel="self" type="application/atom+xml" href="https://yebug.github.io/feed.xml"/>
   <link rel="alternate" type="text/html" hreflang="en"
-    href="https://yebug.github.io/YeBug.github.io/_site/"/>
+    href="https://yebug.github.io/"/>
   <generator uri="https://jekyllrb.com/" version="4.3.2">Jekyll</generator>
   <rights> © 2023 YeBug </rights>
-  <icon>/YeBug.github.io/_site/assets/img/favicons/favicon.ico</icon>
-  <logo>/YeBug.github.io/_site/assets/img/favicons/favicon-96x96.png</logo>
+  <icon>/assets/img/favicons/favicon.ico</icon>
+  <logo>/assets/img/favicons/favicon-96x96.png</logo>
 
 
 </feed>

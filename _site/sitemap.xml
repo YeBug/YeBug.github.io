@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
-<loc>https://yebug.github.io/YeBug.github.io/_site/categories/</loc>
-<lastmod>2023-05-18T16:19:12+08:00</lastmod>
+<loc>https://yebug.github.io/categories/</loc>
+<lastmod>2023-05-18T16:26:32+08:00</lastmod>
 </url>
 <url>
-<loc>https://yebug.github.io/YeBug.github.io/_site/tags/</loc>
-<lastmod>2023-05-18T16:19:12+08:00</lastmod>
+<loc>https://yebug.github.io/tags/</loc>
+<lastmod>2023-05-18T16:26:32+08:00</lastmod>
 </url>
 <url>
-<loc>https://yebug.github.io/YeBug.github.io/_site/archives/</loc>
-<lastmod>2023-05-18T16:19:12+08:00</lastmod>
+<loc>https://yebug.github.io/archives/</loc>
+<lastmod>2023-05-18T16:26:32+08:00</lastmod>
 </url>
 <url>
-<loc>https://yebug.github.io/YeBug.github.io/_site/about/</loc>
-<lastmod>2023-05-18T16:19:12+08:00</lastmod>
+<loc>https://yebug.github.io/about/</loc>
+<lastmod>2023-05-18T16:26:32+08:00</lastmod>
 </url>
 <url>
-<loc>https://yebug.github.io/YeBug.github.io/_site/</loc>
+<loc>https://yebug.github.io/</loc>
 </url>
 </urlset>
