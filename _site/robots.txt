@@ -1,5 +1,0 @@
-User-agent: *
-
-Disallow: /norobots/
-
-Sitemap: https://yebug.github.io/YeBug.github.io/sitemap.xml
