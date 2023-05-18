@@ -18,7 +18,7 @@ timezone: Asia/Shanghai
 # jekyll-seo-tag settings › https://github.com/jekyll/jekyll-seo-tag/blob/master/docs/usage.md
 # ↓ --------------------------
 
-title: waiting for main title # the main title
+title: YeBug's Blog # the main title
 
 tagline: waiting for sub-title # it will display as the sub-title
 
@@ -80,7 +80,7 @@ theme_mode: # [light|dark]
 img_cdn:
 
 # the avatar on sidebar, support local or CORS resources
-avatar:
+avatar: assets\img\favicons\head.jpg
 
 # boolean type, the global switch for TOC in posts.
 toc: true
