@@ -41,7 +41,7 @@ social:
   email: donald_hunter_c@163.com # change to your email address
   links:
     # The first element serves as the copyright owner's link
-    - https://twitter.com/username # change to your twitter homepage
+    #- https://twitter.com/username # change to your twitter homepage
     - https://github.com/YeBug # change to your github homepage
     # Uncomment below to add more social links
     # - https://www.facebook.com/username
@@ -80,7 +80,7 @@ theme_mode: # [light|dark]
 img_cdn:
 
 # the avatar on sidebar, support local or CORS resources
-avatar: assets/img/favicons/head.jpg
+avatar: assets/img/homepage/head.jpg
 
 # boolean type, the global switch for TOC in posts.
 toc: true
