@@ -41,7 +41,7 @@ footer{justify-content:flex-end}
 </style>
 </head>
 <body>
-<video class="background" id="backgroundVideo" loop playsinline preload="auto" poster="assets/poster.jpg" aria-label="告白页背景视频"><source src="assets/background.mp4?v=030304576f39" type="video/mp4"></video>
+<video class="background" id="backgroundVideo" loop playsinline preload="none" poster="assets/poster.jpg" aria-label="告白页背景视频"><source src="assets/background.mp4?v=030304576f39" type="video/mp4"></video>
 <div class="veil"></div><div class="grain"></div>
 <header><div class="brand"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M20.8 4.6a5.4 5.4 0 0 0-7.6 0L12 5.8l-1.2-1.2a5.4 5.4 0 0 0-7.6 7.6L12 21l8.8-8.8a5.4 5.4 0 0 0 0-7.6Z"/></svg>一封，只写给你的信</div><span class="header-note">For you, always.</span></header>
 <main class="layout">
@@ -69,7 +69,7 @@ const motion=document.getElementById('motion');
 const videoSource=new URL(video.querySelector('source').getAttribute('src'),document.baseURI).href;
 const localFile=location.protocol==='file:';
 let fullyDownloaded=localFile,loadingVideo=false,loadFailed=false,needsPlaybackGesture=false;
-let downloadPromise=null,downloadController=null,videoBlobUrl=null,downloadPercent=0;
+let downloadPromise=null,downloadController=null,videoBlobUrl=null,downloadPercent=0,playbackPromise=null;
 
 function updateMotion(){
   motion.disabled=loadingVideo;
@@ -115,18 +115,20 @@ async function downloadCompleteVideo(){
   finally{loadingVideo=false;updateMotion()}
 }
 
-async function startPlayback(){
-  if(loadingVideo)return;
+function startPlayback(){
+  if(playbackPromise)return playbackPromise;
   needsPlaybackGesture=false;loadFailed=false;
-  try{
-    await downloadCompleteVideo();
-    video.muted=false;await video.play();
-  }catch(error){
-    video.pause();
-    if(error.name==='NotAllowedError')needsPlaybackGesture=true;
-    else if(error.name!=='AbortError'){loadFailed=true;console.warn('视频加载失败，可点击播放按钮重试。')}
-  }
-  updateMotion();
+  playbackPromise=(async()=>{
+    try{
+      await downloadCompleteVideo();
+      video.muted=false;await video.play();
+    }catch(error){
+      video.pause();
+      if(error.name==='NotAllowedError')needsPlaybackGesture=true;
+      else if(error.name!=='AbortError'){loadFailed=true;console.warn('视频加载失败，可点击播放按钮重试。')}
+    }finally{playbackPromise=null;updateMotion()}
+  })();
+  return playbackPromise;
 }
 
 motion.addEventListener('click',()=>{if(video.paused||!fullyDownloaded)startPlayback();else video.pause()});
@@ -136,14 +138,14 @@ openButton.setAttribute('aria-expanded','false');openButton.setAttribute('aria-c
 function setLetterOpen(open){document.body.classList.toggle('reading',open);letterSection.hidden=!open;envelopeWrap.hidden=open;openButton.setAttribute('aria-expanded',String(open));envelope.setAttribute('aria-expanded',String(open));openButton.firstChild.textContent=open?'收起这封信':'读这封信';if(open){document.getElementById('letter').focus({preventScroll:true});requestAnimationFrame(()=>letterSection.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'}))}else{openButton.focus({preventScroll:true})}}
 openButton.addEventListener('click',()=>setLetterOpen(letterSection.hidden));envelope.addEventListener('click',()=>setLetterOpen(true));document.getElementById('closeLetter').addEventListener('click',()=>setLetterOpen(false));document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!letterSection.hidden)setLetterOpen(false)});
 
-function resumeOnGesture(event){if((!fullyDownloaded||needsPlaybackGesture)&&!loadingVideo&&!event.target.closest?.('#motion'))startPlayback()}
+function resumeOnGesture(event){if((!fullyDownloaded||needsPlaybackGesture)&&!event.target.closest?.('#motion'))startPlayback()}
 document.addEventListener('click',resumeOnGesture,{capture:true});
 document.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' ')resumeOnGesture(event)},{capture:true});
 window.addEventListener('pagehide',event=>{if(!event.persisted){downloadController?.abort();if(videoBlobUrl)URL.revokeObjectURL(videoBlobUrl)}});
 
-// Keep the existing opening behavior; the first click switches to full local playback.
+// Download the entire web video immediately; audible playback follows browser policy.
 video.muted=false;video.volume=1;
-video.play().catch(error=>{if(loadingVideo||(!localFile&&fullyDownloaded))return;video.pause();if(error.name==='NotAllowedError')needsPlaybackGesture=true;updateMotion()});
+startPlayback();
 updateMotion();
 </script>
 </body></html>
