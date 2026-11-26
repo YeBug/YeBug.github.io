@@ -37,6 +37,7 @@ body{isolation:isolate;min-height:100svh;overflow-x:hidden}
 .letter-body p{margin:0 0 1em;text-indent:2em}
 .letter-body p:last-child{margin-bottom:0}
 .letter-wrap{scroll-margin-top:24px}
+footer{justify-content:flex-end}
 </style>
 </head>
 <body>
@@ -44,8 +45,8 @@ body{isolation:isolate;min-height:100svh;overflow-x:hidden}
 <div class="veil"></div><div class="grain"></div>
 <header><div class="brand"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M20.8 4.6a5.4 5.4 0 0 0-7.6 0L12 5.8l-1.2-1.2a5.4 5.4 0 0 0-7.6 7.6L12 21l8.8-8.8a5.4 5.4 0 0 0 0-7.6Z"/></svg>一封，只写给你的信</div><span class="header-note">For you, always.</span></header>
 <main class="layout">
-<section class="intro"><div class="eyebrow">A LETTER TO YOU</div><h1>有些心意，<br>想慢慢<em>说给你听。</em></h1><p class="intro-copy">把想说的话，藏进这一封信里。<br>也把这一刻，留给你。</p><button class="open" id="openLetter">读这封信<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="1"/><path d="m3 6 9 7 9-7"/></svg></button><p class="tiny">Some words are only meant for you.</p></section>
-<div class="envelope-wrap" id="envelopeWrap"><button class="envelope" id="envelope" aria-label="拆开写给你的信" aria-expanded="false" aria-controls="letterSection"><span class="seal" aria-hidden="true">♡</span><span class="envelope-to">Especially for you</span></button><p class="envelope-hint">轻轻点击，拆开这封心意</p></div>
+<section class="intro"><div class="eyebrow">A LETTER TO YOU</div><h1>有些心意，<br>想慢慢<em>说给你听。</em></h1><button class="open" id="openLetter">读这封信<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="1"/><path d="m3 6 9 7 9-7"/></svg></button><p class="tiny">Some words are only meant for you.</p></section>
+<div class="envelope-wrap" id="envelopeWrap"><button class="envelope" id="envelope" aria-label="拆开写给你的信" aria-expanded="false" aria-controls="letterSection"><span class="seal" aria-hidden="true">♡</span><span class="envelope-to">Especially for you</span></button></div>
 <section class="letter-wrap" id="letterSection" aria-label="情书" hidden><article class="letter" tabindex="-1" id="letter"><div class="letter-top"><span class="letter-label">DEAR YOU</span><span class="heart" aria-hidden="true">♡</span><button class="close-letter" id="closeLetter" aria-label="收起情书" title="收起情书">×</button></div>
 <!-- 情书编辑区 -->
 <h2 class="salutation">给亲爱的喵喵：</h2>
@@ -61,7 +62,7 @@ body{isolation:isolate;min-height:100svh;overflow-x:hidden}
 <!-- 情书编辑区结束 -->
 <div class="letter-foot">With all my heart</div></article></section>
 </main>
-<footer><span class="footer-note">JUST YOU &amp; THIS MOMENT</span><div class="controls"><button class="control" id="motion" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path id="motionMark" d="M8 5v14M16 5v14"/></svg><span>暂停画面</span></button></div></footer>
+<footer><div class="controls"><button class="control" id="motion" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path id="motionMark" d="M8 5v14M16 5v14"/></svg><span>暂停画面</span></button></div></footer>
 <script>
 const video=document.getElementById('backgroundVideo');
 const motion=document.getElementById('motion');
