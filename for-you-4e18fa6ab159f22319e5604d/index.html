@@ -66,21 +66,84 @@ footer{justify-content:flex-end}
 <script>
 const video=document.getElementById('backgroundVideo');
 const motion=document.getElementById('motion');
-function updateMotion(){motion.querySelector('span').textContent=video.paused?'播放画面':'暂停画面';motion.setAttribute('aria-pressed',String(video.paused));document.getElementById('motionMark').setAttribute('d',video.paused?'m8 4 12 8-12 8Z':'M8 5v14M16 5v14')}
-motion.addEventListener('click',()=>{if(video.paused)startPlayback();else video.pause()});
+const videoSource=new URL(video.querySelector('source').getAttribute('src'),document.baseURI).href;
+const localFile=location.protocol==='file:';
+let fullyDownloaded=localFile,loadingVideo=false,loadFailed=false,needsPlaybackGesture=false;
+let downloadPromise=null,downloadController=null,videoBlobUrl=null,downloadPercent=0;
+
+function updateMotion(){
+  motion.disabled=loadingVideo;
+  motion.setAttribute('aria-busy',String(loadingVideo));
+  motion.setAttribute('aria-pressed',String(video.paused));
+  motion.querySelector('span').textContent=loadingVideo
+    ? '视频加载 '+downloadPercent+'%'
+    : loadFailed?'加载失败，点此重试':video.paused?'播放画面':'暂停画面';
+  document.getElementById('motionMark').setAttribute('d',video.paused?'m8 4 12 8-12 8Z':'M8 5v14M16 5v14');
+}
+
+async function downloadCompleteVideo(){
+  if(fullyDownloaded)return;
+  if(downloadPromise)return downloadPromise;
+  loadingVideo=true;loadFailed=false;downloadPercent=0;updateMotion();
+  const resumeAt=video.currentTime||0;
+  // Stop the native range request so it does not compete with the full download.
+  video.pause();video.removeAttribute('src');video.querySelector('source').removeAttribute('src');video.load();
+  downloadController=new AbortController();
+  downloadPromise=(async()=>{
+    const response=await fetch(videoSource,{cache:'force-cache',signal:downloadController.signal});
+    if(!response.ok)throw new Error('Video download failed: '+response.status);
+    const total=Number(response.headers.get('content-length'));
+    let blob;
+    if(response.body){
+      const reader=response.body.getReader(),chunks=[];let loaded=0;
+      while(true){
+        const {done,value}=await reader.read();if(done)break;
+        chunks.push(value);loaded+=value.byteLength;
+        const next=total?Math.min(99,Math.floor(loaded/total*100)):0;
+        if(next!==downloadPercent){downloadPercent=next;updateMotion()}
+      }
+      if(!loaded||(total&&loaded!==total))throw new Error('Incomplete video download');
+      blob=new Blob(chunks,{type:'video/mp4'});
+    }else blob=await response.blob();
+    if(!blob.size)throw new Error('Empty video');
+    videoBlobUrl=URL.createObjectURL(blob);
+    video.src=videoBlobUrl;video.load();video.currentTime=resumeAt;
+    fullyDownloaded=true;downloadPercent=100;
+  })();
+  try{await downloadPromise}
+  catch(error){downloadPromise=null;throw error}
+  finally{loadingVideo=false;updateMotion()}
+}
+
+async function startPlayback(){
+  if(loadingVideo)return;
+  needsPlaybackGesture=false;loadFailed=false;
+  try{
+    await downloadCompleteVideo();
+    video.muted=false;await video.play();
+  }catch(error){
+    video.pause();
+    if(error.name==='NotAllowedError')needsPlaybackGesture=true;
+    else if(error.name!=='AbortError'){loadFailed=true;console.warn('视频加载失败，可点击播放按钮重试。')}
+  }
+  updateMotion();
+}
+
+motion.addEventListener('click',()=>{if(video.paused||!fullyDownloaded)startPlayback();else video.pause()});
 video.addEventListener('play',updateMotion);video.addEventListener('pause',updateMotion);
-video.addEventListener('error',()=>console.warn('视频未能加载，请将 HTML 与 assets 文件夹放在一起。'));
 const openButton=document.getElementById('openLetter'),envelope=document.getElementById('envelope'),letterSection=document.getElementById('letterSection'),envelopeWrap=document.getElementById('envelopeWrap');
 openButton.setAttribute('aria-expanded','false');openButton.setAttribute('aria-controls','letterSection');
 function setLetterOpen(open){document.body.classList.toggle('reading',open);letterSection.hidden=!open;envelopeWrap.hidden=open;openButton.setAttribute('aria-expanded',String(open));envelope.setAttribute('aria-expanded',String(open));openButton.firstChild.textContent=open?'收起这封信':'读这封信';if(open){document.getElementById('letter').focus({preventScroll:true});requestAnimationFrame(()=>letterSection.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'}))}else{openButton.focus({preventScroll:true})}}
 openButton.addEventListener('click',()=>setLetterOpen(letterSection.hidden));envelope.addEventListener('click',()=>setLetterOpen(true));document.getElementById('closeLetter').addEventListener('click',()=>setLetterOpen(false));document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!letterSection.hidden)setLetterOpen(false)});
-let needsPlaybackGesture=false;
-video.muted=false;
-video.volume=1;
-async function startPlayback(){needsPlaybackGesture=false;video.muted=false;try{await video.play()}catch(error){video.pause();if(error.name==='NotAllowedError'){needsPlaybackGesture=true}else{console.warn('视频暂时无法播放，请检查 assets 文件夹中的视频。')}}updateMotion()}
-function resumeOnGesture(event){if(needsPlaybackGesture&&!event.target.closest?.('#motion'))startPlayback()}
+
+function resumeOnGesture(event){if((!fullyDownloaded||needsPlaybackGesture)&&!loadingVideo&&!event.target.closest?.('#motion'))startPlayback()}
 document.addEventListener('click',resumeOnGesture,{capture:true});
 document.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' ')resumeOnGesture(event)},{capture:true});
-startPlayback();
+window.addEventListener('pagehide',event=>{if(!event.persisted){downloadController?.abort();if(videoBlobUrl)URL.revokeObjectURL(videoBlobUrl)}});
+
+// Keep the existing opening behavior; the first click switches to full local playback.
+video.muted=false;video.volume=1;
+video.play().catch(error=>{if(loadingVideo||(!localFile&&fullyDownloaded))return;video.pause();if(error.name==='NotAllowedError')needsPlaybackGesture=true;updateMotion()});
+updateMotion();
 </script>
 </body></html>
