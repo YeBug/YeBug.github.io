@@ -32,6 +32,11 @@ body{isolation:isolate;min-height:100svh;overflow-x:hidden}
 @keyframes unfold{from{opacity:0;transform:translateY(25px) rotateX(-12deg);clip-path:inset(0 0 85% 0)}to{opacity:1;transform:none;clip-path:inset(0)}}
 @media(max-width:760px){.envelope-wrap{width:min(100%,390px);margin:auto;padding:20px 8px 30px}.envelope-hint{font-size:12px}.letter{padding-top:26px}.veil{background:linear-gradient(0deg,#17131559,#17131520 80%,#17131540)}}
 @media(prefers-reduced-motion:reduce){.letter-wrap{animation:none}}
+/* 长信阅读排版 */
+.letter-body{background:none;line-height:2;min-height:0}
+.letter-body p{margin:0 0 1em;text-indent:2em}
+.letter-body p:last-child{margin-bottom:0}
+.letter-wrap{scroll-margin-top:24px}
 </style>
 </head>
 <body>
@@ -42,8 +47,17 @@ body{isolation:isolate;min-height:100svh;overflow-x:hidden}
 <section class="intro"><div class="eyebrow">A LETTER TO YOU</div><h1>有些心意，<br>想慢慢<em>说给你听。</em></h1><p class="intro-copy">把想说的话，藏进这一封信里。<br>也把这一刻，留给你。</p><button class="open" id="openLetter">读这封信<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="1"/><path d="m3 6 9 7 9-7"/></svg></button><p class="tiny">Some words are only meant for you.</p></section>
 <div class="envelope-wrap" id="envelopeWrap"><button class="envelope" id="envelope" aria-label="拆开写给你的信" aria-expanded="false" aria-controls="letterSection"><span class="seal" aria-hidden="true">♡</span><span class="envelope-to">Especially for you</span></button><p class="envelope-hint">轻轻点击，拆开这封心意</p></div>
 <section class="letter-wrap" id="letterSection" aria-label="情书" hidden><article class="letter" tabindex="-1" id="letter"><div class="letter-top"><span class="letter-label">DEAR YOU</span><span class="heart" aria-hidden="true">♡</span><button class="close-letter" id="closeLetter" aria-label="收起情书" title="收起情书">×</button></div>
-<!-- 情书编辑区：将下方【待填充】替换为自己的内容即可。 -->
-<h2 class="salutation">致【称呼待填充】：</h2><div class="letter-body"><p>【情书正文待填充】<br>【情书正文待填充，情书正文待填充】</p><p>【情书正文待填充，情书正文待填充】<br>【情书正文待填充】</p><p>【情书正文待填充……】</p></div><div class="signature"><div>【署名待填充】</div><div class="date">【日期待填充】</div></div>
+<!-- 情书编辑区 -->
+<h2 class="salutation">给亲爱的喵喵：</h2>
+<div class="letter-body">
+<p>两年前的冬天，我们像两条不平行的直线，经过数个岁岁年年的延申，终于相交。命运有时候就是如此神奇，让我遇见你。</p>
+<p>最初次的相见，我看到的是见到我而眼前一亮的你，温柔、大方又矜持。</p>
+<p>后来数次的相见，我看到的是心地善良热爱生活的你，可爱、体贴又时而幼稚。</p>
+<p>两年里，我们一起轧过无数马路、爬过许多山峦、游过各种园林，也一起尝试过天南海北的美食。但我知道，再多的景色都将归于平淡，唯有和你一起度过的时光会长存不散；再多的美食也终会乏味，唯有和你一人一口的棒冰怎么吃也不腻。</p>
+<p>亲爱的喵喵，未来的相见，我会一直看到满眼都是我的你，美丽、智慧、富有且坚定。</p>
+<p>而我，也将矢志不渝。</p>
+</div>
+<div class="signature">你永远的狗狗</div>
 <!-- 情书编辑区结束 -->
 <div class="letter-foot">With all my heart</div></article></section>
 </main>
@@ -57,7 +71,7 @@ video.addEventListener('play',updateMotion);video.addEventListener('pause',updat
 video.addEventListener('error',()=>console.warn('视频未能加载，请将 HTML 与 assets 文件夹放在一起。'));
 const openButton=document.getElementById('openLetter'),envelope=document.getElementById('envelope'),letterSection=document.getElementById('letterSection'),envelopeWrap=document.getElementById('envelopeWrap');
 openButton.setAttribute('aria-expanded','false');openButton.setAttribute('aria-controls','letterSection');
-function setLetterOpen(open){document.body.classList.toggle('reading',open);letterSection.hidden=!open;envelopeWrap.hidden=open;openButton.setAttribute('aria-expanded',String(open));envelope.setAttribute('aria-expanded',String(open));openButton.firstChild.textContent=open?'收起这封信':'读这封信';if(open){document.getElementById('letter').focus({preventScroll:true});requestAnimationFrame(()=>letterSection.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'center'}))}else{openButton.focus({preventScroll:true})}}
+function setLetterOpen(open){document.body.classList.toggle('reading',open);letterSection.hidden=!open;envelopeWrap.hidden=open;openButton.setAttribute('aria-expanded',String(open));envelope.setAttribute('aria-expanded',String(open));openButton.firstChild.textContent=open?'收起这封信':'读这封信';if(open){document.getElementById('letter').focus({preventScroll:true});requestAnimationFrame(()=>letterSection.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'}))}else{openButton.focus({preventScroll:true})}}
 openButton.addEventListener('click',()=>setLetterOpen(letterSection.hidden));envelope.addEventListener('click',()=>setLetterOpen(true));document.getElementById('closeLetter').addEventListener('click',()=>setLetterOpen(false));document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!letterSection.hidden)setLetterOpen(false)});
 let needsPlaybackGesture=false;
 video.muted=false;
